@@ -1,715 +1,149 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:video_player/video_player.dart';
 
-void main() {
-  runApp(const KSINGH());
-}
+void main() => runApp(const KSinghApp());
 
-// ============================================================
-// KSINGH APP
-// ============================================================
+String appLang = "English"; // default
 
-class KSINGH extends StatelessWidget {
-  const KSINGH({super.key});
-
+class KSinghApp extends StatelessWidget {
+  const KSinghApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'KSINGH',
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xff030305),
-        fontFamily: GoogleFonts.poppins().fontFamily,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
-          brightness: Brightness.dark,
-        ),
-      ),
-      home: const LoginPage(),
+      theme: ThemeData.dark(),
+      home: const LanguageScreen(),
     );
   }
 }
 
-// ============================================================
-// LOGIN PAGE
-// ============================================================
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
+// 1. LANGUAGE SELECTION - SABSE PEHLE
+class LanguageScreen extends StatefulWidget {
+  const LanguageScreen({super.key});
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LanguageScreen> createState() => _LanguageScreenState();
 }
 
-class _LoginPageState extends State<LoginPage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController animation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    animation = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 5),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    animation.dispose();
-    super.dispose();
-  }
-
-  void login() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const MainPage(),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          const NeonBackground(),
-
-          Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(25),
-              child: Column(
-                children: [
-                  AnimatedBuilder(
-                    animation: animation,
-                    builder: (context, child) {
-                      return Transform.rotate(
-                        angle: animation.value * 0.15,
-                        child: child,
-                      );
-                    },
-                    child: const KSINGHLogo(size: 145),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  Text(
-                    "KSINGH",
-                    style: GoogleFonts.poppins(
-                      fontSize: 36,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 4,
-                      shadows: const [
-                        Shadow(
-                          color: Colors.purple,
-                          blurRadius: 20,
-                        ),
-                        Shadow(
-                          color: Colors.blue,
-                          blurRadius: 30,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 5),
-
-                  Text(
-                    "CREATE • CONNECT • SHARE",
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(.55),
-                      letterSpacing: 2,
-                      fontSize: 11,
-                    ),
-                  ),
-
-                  const SizedBox(height: 45),
-
-                  GlassBox(
-                    child: Padding(
-                      padding: const EdgeInsets.all(25),
-                      child: Column(
-                        children: [
-                          const Text(
-                            "Welcome to KSINGH",
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          Text(
-                            "Login karke apni duniya se connect karein",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(.55),
-                            ),
-                          ),
-
-                          const SizedBox(height: 30),
-
-                          GestureDetector(
-                            onTap: login,
-                            child: Container(
-                              height: 58,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(18),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Colors.purple,
-                                    blurRadius: 25,
-                                    spreadRadius: -5,
-                                  ),
-                                  BoxShadow(
-                                    color: Colors.blue,
-                                    blurRadius: 35,
-                                    spreadRadius: -15,
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.white,
-                                    ),
-                                    child: const Center(
-                                      child: Text(
-                                        "G",
-                                        style: TextStyle(
-                                          color: Color(0xff4285F4),
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: 12),
-
-                                  const Text(
-                                    "Continue with Google",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 18),
-
-                          Text(
-                            "Fast • Secure • Simple",
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(.35),
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ============================================================
-// MAIN PAGE
-// ============================================================
-
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
-
-  @override
-  State<MainPage> createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  int page = 0;
-
-  final screens = const [
-    HomePage(),
-    ReelsPage(),
-    CreatePage(),
-    SearchPage(),
-    ProfilePage(),
+class _LanguageScreenState extends State<LanguageScreen> {
+  String selected = "English";
+  final langs = [
+    {"name": "हिन्दी", "sub": "Hindi", "flag": "🇮🇳"},
+    {"name": "English", "sub": "English", "flag": "🇺🇸"},
+    {"name": "भोजपुरी", "sub": "Bhojpuri", "flag": "🌾"},
+    {"name": "اردو", "sub": "Urdu", "flag": "☪️"},
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
-      body: screens[page],
-      bottomNavigationBar: KSINGHBottomBar(
-        selected: page,
-        onChanged: (value) {
-          setState(() {
-            page = value;
-          });
-        },
-      ),
-    );
-  }
-}
-
-// ============================================================
-// HOME
-// ============================================================
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        const NeonBackground(),
-
-        SafeArea(
-          child: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                floating: true,
-
-                title: Row(
-                  children: [
-                    const KSINGHLogo(size: 42),
-                    const SizedBox(width: 10),
-
-                    Text(
-                      "KSINGH",
-                      style: GoogleFonts.poppins(
-                        fontSize: 23,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.5,
-                      ),
+      backgroundColor: const Color(0xFF0A0A0F),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              ShaderMask(
+                shaderCallback: (b) => const LinearGradient(colors: [Color(0xFF8A2BE2), Color(0xFF00FFFF)]).createShader(b),
+                child: const Text("KS", style: TextStyle(fontSize: 50, fontWeight: FontWeight.w900, color: Colors.white)),
+              ),
+              const SizedBox(height: 10),
+              const Text("Apni Bhasha Chune", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+              const Text("Choose your language", style: TextStyle(color: Colors.grey)),
+              const SizedBox(height: 30),
+              ...langs.map((lang) {
+                bool isSel = selected == lang["sub"];
+                return GestureDetector(
+                  onTap: () => setState(() => selected = lang["sub"]!),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: isSel ? Colors.purple.withOpacity(0.3) : const Color(0xFF1A1A25),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: isSel ? Colors.purpleAccent : Colors.white12, width: isSel ? 2 : 1),
                     ),
-                  ],
-                ),
-
-                actions: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.favorite_border,
+                    child: Row(
+                      children: [
+                        Text(lang["flag"]!, style: const TextStyle(fontSize: 28)),
+                        const SizedBox(width: 16),
+                        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(lang["name"]!, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), Text(lang["sub"]!, style: const TextStyle(color: Colors.grey, fontSize: 12))]),
+                        const Spacer(),
+                        if (isSel) const Icon(Icons.check_circle, color: Colors.purpleAccent),
+                      ],
                     ),
                   ),
-
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.chat_bubble_outline,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SliverToBoxAdapter(
-                child: StoryBar(),
-              ),
-
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  const [
-                    PostCard(
-                      username: "ksingh_user",
-                      location: "India",
-                      image:
-                          "https://picsum.photos/id/1015/900/1100",
-                      caption:
-                          "Welcome to KSINGH 🔥 Create something amazing!",
-                    ),
-
-                    PostCard(
-                      username: "travel_king",
-                      location: "Goa",
-                      image:
-                          "https://picsum.photos/id/1016/900/1100",
-                      caption:
-                          "Life is beautiful. Keep exploring 🌊",
-                    ),
-
-                    PostCard(
-                      username: "creator",
-                      location: "Mumbai",
-                      image:
-                          "https://picsum.photos/id/1018/900/1100",
-                      caption:
-                          "New creation coming soon 💜",
-                    ),
-                  ],
+                );
+              }).toList(),
+              const Spacer(),
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(gradient: const LinearGradient(colors: [Colors.purple, Colors.cyan]), borderRadius: BorderRadius.circular(30)),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, shadowColor: Colors.transparent, padding: const EdgeInsets.symmetric(vertical: 16)),
+                  onPressed: () {
+                    appLang = selected;
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const WelcomeScreen()));
+                  },
+                  child: const Text("Continue →", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 }
 
-// ============================================================
-// STORY BAR
-// ============================================================
-
-class StoryBar extends StatelessWidget {
-  const StoryBar({super.key});
-
+// 2. WELCOME SCREEN
+class WelcomeScreen extends StatelessWidget {
+  const WelcomeScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    final names = [
-      "Your Story",
-      "Rahul",
-      "Neha",
-      "Aman",
-      "Sara",
-      "King",
-      "Travel",
-    ];
-
-    return SizedBox(
-      height: 115,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
+    return Scaffold(
+      backgroundColor: const Color(0xFF0A0A0F),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ShaderMask(shaderCallback: (b) => const LinearGradient(colors: [Color(0xFF8A2BE2), Color(0xFF00FFFF)]).createShader(b), child: const Text("KS", style: TextStyle(fontSize: 100, fontWeight: FontWeight.w900, color: Colors.white))),
+              const SizedBox(height: 10),
+              Text(appLang == "हिन्दी" || appLang == "Hindi" ? "Welcome to" : "Welcome to", style: const TextStyle(fontSize: 20, color: Colors.grey)),
+              const Text("KSingh App", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.purpleAccent)),
+              const SizedBox(height: 50),
+              Container(width: double.infinity, decoration: BoxDecoration(gradient: const LinearGradient(colors: [Colors.purple, Colors.cyan]), borderRadius: BorderRadius.circular(30)), child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, shadowColor: Colors.transparent, padding: const EdgeInsets.symmetric(vertical: 16)), onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen())), child: const Text("Get Started →", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)))),
+            ],
+          ),
         ),
-        itemCount: names.length,
-        itemBuilder: (context, index) {
-          return SizedBox(
-            width: 82,
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(3),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.red,
-                        Colors.purple,
-                        Colors.blue,
-                      ],
-                    ),
-                  ),
-                  child: CircleAvatar(
-                    radius: 32,
-                    backgroundColor: Colors.black,
-                    backgroundImage: NetworkImage(
-                      "https://i.pravatar.cc/150?img=${index + 1}",
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 6),
-
-                Text(
-                  names[index],
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 11,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
       ),
     );
   }
 }
 
-// ============================================================
-// POST
-// ============================================================
-
-class PostCard extends StatefulWidget {
-  final String username;
-  final String location;
-  final String image;
-  final String caption;
-
-  const PostCard({
-    super.key,
-    required this.username,
-    required this.location,
-    required this.image,
-    required this.caption,
-  });
-
+// 3. GOOGLE LOGIN
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
   @override
-  State<PostCard> createState() => _PostCardState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
-
-class _PostCardState extends State<PostCard> {
-  bool liked = false;
-  bool saved = false;
-  bool following = false;
-
-  int likes = 152;
-
+class _LoginScreenState extends State<LoginScreen> {
+  bool loading = false;
+  void doLogin() async { setState(()=>loading=true); await Future.delayed(const Duration(seconds: 2)); if(mounted) Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainApp())); }
   @override
   Widget build(BuildContext context) {
-    return GlassBox(
-      margin: const EdgeInsets.fromLTRB(
-        10,
-        6,
-        10,
-        14,
-      ),
-      radius: 22,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(
-                "https://i.pravatar.cc/150?u=${widget.username}",
-              ),
-            ),
-
-            title: Text(
-              widget.username,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            subtitle: Text(
-              widget.location,
-              style: TextStyle(
-                color: Colors.white.withOpacity(.5),
-                fontSize: 11,
-              ),
-            ),
-
-            trailing: PopupMenuButton(
-              itemBuilder: (_) {
-                return const [
-                  PopupMenuItem(
-                    value: "report",
-                    child: Text("Report"),
-                  ),
-                  PopupMenuItem(
-                    value: "hide",
-                    child: Text("Hide"),
-                  ),
-                ];
-              },
-            ),
-          ),
-
-          ClipRRect(
-            borderRadius: BorderRadius.circular(18),
-            child: Image.network(
-              widget.image,
-              width: double.infinity,
-              height: 390,
-              fit: BoxFit.cover,
-            ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    SocialButton(
-                      icon: liked
-                          ? Icons.favorite
-                          : Icons.favorite_border,
-                      text: "$likes",
-                      color:
-                          liked ? Colors.red : Colors.white,
-                      onTap: () {
-                        setState(() {
-                          liked = !liked;
-
-                          if (liked) {
-                            likes++;
-                          } else {
-                            likes--;
-                          }
-                        });
-                      },
-                    ),
-
-                    SocialButton(
-                      icon: Icons.comment_outlined,
-                      text: "32",
-                      onTap: () {
-                        comments(context);
-                      },
-                    ),
-
-                    SocialButton(
-                      icon: Icons.send_outlined,
-                      text: "Share",
-                      onTap: () {},
-                    ),
-
-                    SocialButton(
-                      icon: Icons.repeat,
-                      text: "Remix",
-                      onTap: () {},
-                    ),
-
-                    const Spacer(),
-
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          saved = !saved;
-                        });
-                      },
-                      icon: Icon(
-                        saved
-                            ? Icons.bookmark
-                            : Icons.bookmark_border,
-                        color: saved
-                            ? Colors.purpleAccent
-                            : Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 6),
-
-                Text(
-                  widget.caption,
-                  style: const TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      following = !following;
-                    });
-                  },
-                  child: Text(
-                    following ? "Following" : "+ Follow",
-                    style: TextStyle(
-                      color: following
-                          ? Colors.white54
-                          : Colors.purpleAccent,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+    return Scaffold(backgroundColor: const Color(0xFF0A0A0F), body: Center(child: Padding(padding: const EdgeInsets.all(24), child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [const Icon(Icons.account_circle, size: 100, color: Colors.purpleAccent), const SizedBox(height: 20), const Text("Login to Continue", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)), const SizedBox(height: 40), InkWell(onTap: doLogin, child: Container(padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30)), child: Row(mainAxisAlignment: MainAxisAlignment.center, children: const [Icon(Icons.g_mobiledata, color: Colors.black, size: 28), SizedBox(width: 8), Text("Continue with Google", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))]))), const SizedBox(height: 20), if(loading) const CircularProgressIndicator()]))));
   }
 }
 
-// ============================================================
-// REELS
-// ============================================================
-
-class ReelsPage extends StatelessWidget {
-  const ReelsPage({super.key});
-
+// 4. MAIN APP
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
   @override
   Widget build(BuildContext context) {
-    final videos = [
-      "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
-      "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
-    ];
-
-    return PageView.builder(
-      scrollDirection: Axis.vertical,
-      itemCount: videos.length,
-      itemBuilder: (_, index) {
-        return ReelView(
-          video: videos[index],
-          username:
-              index == 0 ? "ksingh_creator" : "travel_king",
-        );
-      },
-    );
+    return Scaffold(backgroundColor: const Color(0xFF0A0A0F), appBar: AppBar(backgroundColor: Colors.black, title: Text("KSingh App • $appLang", style: const TextStyle(color: Colors.purpleAccent))), body: const Center(child: Text("🎉 App Open Ho Gaya!\nLanguage: Selected", textAlign: TextAlign.center, style: TextStyle(fontSize: 20))));
   }
 }
-
-class ReelView extends StatefulWidget {
-  final String video;
-  final String username;
-
-  const ReelView({
-    super.key,
-    required this.video,
-    required this.username,
-  });
-
-  @override
-  State<ReelView> createState() => _ReelViewState();
-}
-
-class _ReelViewState extends State<ReelView> {
-  late VideoPlayerController videoController;
-
-  bool liked = false;
-  bool saved = false;
-  bool following = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    videoController = VideoPlayerController.networkUrl(
-      Uri.parse(widget.video),
-    );
-
-    videoController.initialize().then((_) {
-      if (mounted) {
-        setState(() {});
-        videoController
-          ..setLooping(true)
-          ..play();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    videoController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    ret
+              
