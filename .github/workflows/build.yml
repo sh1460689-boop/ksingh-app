@@ -1,39 +1,263 @@
-import 'package:flutter/material.dart';
-void main() => runApp(const KSinghApp());
-String appLang = 'English';
-class KSinghApp extends StatelessWidget {
-  const KSinghApp({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, theme: ThemeData.dark(), home: const LanguageScreen());
-  }
+import React, { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
+  Dimensions,
+} from 'react-native';
+import { Ionicons, Feather, FontAwesome } from '@expo/vector-icons';
+
+const { width } = Dimensions.get('window');
+
+// Dummy Data: Stories (Instagram Style)
+const STORIES = [
+  { id: '1', user: 'Aapki Story', image: 'https://picsum.photos/100/100?random=1', isUser: true },
+  { id: '2', user: 'rahul_dev', image: 'https://picsum.photos/100/100?random=2' },
+  { id: '3', user: 'tech_guru', image: 'https://picsum.photos/100/100?random=3' },
+  { id: '4', user: 'priya_vlogs', image: 'https://picsum.photos/100/100?random=4' },
+  { id: '5', user: 'coding_hub', image: 'https://picsum.photos/100/100?random=5' },
+];
+
+// Dummy Data: Feed (Mix of Insta Images + YouTube Shorts Preview)
+const POSTS = [
+  {
+    id: '1',
+    username: 'rahul_dev',
+    userImage: 'https://picsum.photos/100/100?random=2',
+    postImage: 'https://picsum.photos/600/600?random=10',
+    type: 'image', // Instagram Photo Post
+    likes: 1240,
+    caption: 'Naya social media project shuru kiya! 🚀 #coding #startup',
+    commentsCount: 45,
+  },
+  {
+    id: '2',
+    username: 'tech_guru',
+    userImage: 'https://picsum.photos/100/100?random=3',
+    postImage: 'https://picsum.photos/600/750?random=11',
+    type: 'reel', // YouTube Shorts / Reel Post
+    likes: 8520,
+    caption: 'Full-stack app architecture in 60 seconds! Check this out 👇',
+    commentsCount: 312,
+  },
+];
+
+export default function SocialMixApp() {
+  const [posts, setPosts] = useState(POSTS);
+
+  const toggleLike = (id) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === id
+          ? {
+              ...post,
+              isLiked: !post.isLiked,
+              likes: post.isLiked ? post.likes - 1 : post.likes + 1,
+            }
+          : post
+      )
+    );
+  };
+
+  const renderStories = () => (
+    <View style={styles.storiesContainer}>
+      <FlatList
+        data={STORIES}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.storyItem}>
+            <View style={[styles.storyRing, item.isUser && styles.userStoryRing]}>
+              <Image source={{ uri: item.image }} style={styles.storyImage} />
+            </View>
+            <Text style={styles.storyText} numberOfLines={1}>
+              {item.user}
+            </Text>
+          </View>
+        )}
+      />
+    </View>
+  );
+
+  const renderPost = ({ item }) => (
+    <View style={styles.postCard}>
+      {/* Post Header */}
+      <View style={styles.postHeader}>
+        <View style={styles.userInfo}>
+          <Image source={{ uri: item.userImage }} style={styles.avatar} />
+          <Text style={styles.username}>{item.username}</Text>
+        </View>
+        <Feather name="more-vertical" size={20} color="#333" />
+      </View>
+
+      {/* Media (Image / Video Player Container) */}
+      <View style={styles.mediaContainer}>
+        <Image source={{ uri: item.postImage }} style={styles.postImage} />
+        {item.type === 'reel' && (
+          <View style={styles.reelBadge}>
+            <Ionicons name="play" size={14} color="#fff" />
+            <Text style={styles.reelBadgeText}>Reel / Short</Text>
+          </View>
+        )}
+      </View>
+
+      {/* Action Buttons (Like, Comment, Share) */}
+      <View style={styles.actionRow}>
+        <View style={styles.leftActions}>
+          <TouchableOpacity onPress={() => toggleLike(item.id)}>
+            <Ionicons
+              name={item.isLiked ? 'heart' : 'heart-outline'}
+              size={26}
+              color={item.isLiked ? '#e91e63' : '#222'}
+              style={styles.actionIcon}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Ionicons name="chatbubble-outline" size={24} color="#222" style={styles.actionIcon} />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Ionicons name="paper-plane-outline" size={24} color="#222" style={styles.actionIcon} />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity>
+          <Ionicons name="bookmark-outline" size={24} color="#222" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Likes & Caption */}
+      <View style={styles.postDetails}>
+        <Text style={styles.likesCount}>{item.likes.toLocaleString()} likes</Text>
+        <Text style={styles.captionText}>
+          <Text style={styles.usernameBold}>{item.username} </Text>
+          {item.caption}
+        </Text>
+        <Text style={styles.commentSummary}>
+          View all {item.commentsCount} comments
+        </Text>
+      </View>
+    </View>
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
+
+      {/* App Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>MixApp</Text>
+        <View style={styles.headerIcons}>
+          <TouchableOpacity style={styles.iconBtn}>
+            <Ionicons name="add-circle-outline" size={26} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconBtn}>
+            <Ionicons name="chatbubbles-outline" size={26} color="#000" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Main Feed */}
+      <FlatList
+        data={posts}
+        ListHeaderComponent={renderStories}
+        renderItem={renderPost}
+        keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
+      />
+
+      {/* Bottom Navigation Bar */}
+      <View style={styles.bottomNav}>
+        <TouchableOpacity><Ionicons name="home" size={24} color="#000" /></TouchableOpacity>
+        <TouchableOpacity><Ionicons name="search" size={24} color="#666" /></TouchableOpacity>
+        <TouchableOpacity><Ionicons name="play-circle-outline" size={28} color="#666" /></TouchableOpacity>
+        <TouchableOpacity><Ionicons name="people-outline" size={24} color="#666" /></TouchableOpacity>
+        <TouchableOpacity><FontAwesome name="user-circle" size={24} color="#666" /></TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
 }
-class LanguageScreen extends StatefulWidget {
-  const LanguageScreen({super.key});
-  @override State<LanguageScreen> createState() => _LanguageScreenState();
-}
-class _LanguageScreenState extends State<LanguageScreen> {
-  String selected = 'English';
-  final langs = [{'name': 'हिन्दी','sub': 'Hindi','flag': '🇮🇳'},{'name': 'English','sub': 'English','flag': '🇺🇸'},{'name': 'भोजपुरी','sub': 'Bhojpuri','flag': '🌾'},{'name': 'اردو','sub': 'Urdu','flag': '☪️'}];
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: const Color(0xFF0A0A0F), body: SafeArea(child: Padding(padding: const EdgeInsets.all(20), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const SizedBox(height:20), const Text('KS', style: TextStyle(fontSize:60, fontWeight: FontWeight.w900)), const SizedBox(height:10),
-      const Text('Apni Bhasha Chune', style: TextStyle(fontSize:28, fontWeight: FontWeight.bold)), const Text('Choose your language', style: TextStyle(color: Colors.grey)), const SizedBox(height:30),
-      Expanded(child: ListView.builder(itemCount: langs.length, itemBuilder: (c,i){ final lang=langs[i]; bool isSel=selected==lang['sub']; return GestureDetector(onTap:()=>setState(()=>selected=lang['sub']!), child: Container(margin: const EdgeInsets.only(bottom:12), padding: const EdgeInsets.all(16), decoration: BoxDecoration(color: isSel? Colors.purple.withOpacity(0.3) : const Color(0xFF1A1A25), borderRadius: BorderRadius.circular(16), border: Border.all(color: isSel? Colors.purpleAccent : Colors.white12)), child: Row(children:[Text(lang['flag']!, style: const TextStyle(fontSize:28)), const SizedBox(width:16), Column(crossAxisAlignment: CrossAxisAlignment.start, children:[Text(lang['name']!, style: const TextStyle(fontSize:18, fontWeight: FontWeight.bold)), Text(lang['sub']!, style: const TextStyle(color:Colors.grey, fontSize:12))]), const Spacer(), if(isSel) const Icon(Icons.check_circle, color: Colors.purpleAccent)]))); })),
-      Container(width: double.infinity, decoration: BoxDecoration(gradient: const LinearGradient(colors:[Colors.purple, Colors.cyan]), borderRadius: BorderRadius.circular(30)), child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, shadowColor: Colors.transparent, padding: const EdgeInsets.symmetric(vertical:16)), onPressed:(){ appLang=selected; Navigator.push(context, MaterialPageRoute(builder:(_)=>const WelcomeScreen())); }, child: const Text('Continue →', style: TextStyle(fontSize:18, fontWeight: FontWeight.bold)))),
-    ]))));
-  }
-}
-class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key});
-  @override Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: const Color(0xFF0A0A0F), body: Center(child: Padding(padding: const EdgeInsets.all(24), child: Column(mainAxisAlignment: MainAxisAlignment.center, children:[
-      const Text('KS', style: TextStyle(fontSize:100, fontWeight: FontWeight.w900)), const Text('Welcome to', style: TextStyle(color:Colors.grey)), const Text('KSingh App', style: TextStyle(fontSize:36, fontWeight: FontWeight.bold, color: Colors.purpleAccent)), Text('Language: $appLang', style: const TextStyle(color: Colors.cyanAccent)), const SizedBox(height:50),
-      Container(width: double.infinity, decoration: BoxDecoration(gradient: const LinearGradient(colors:[Colors.purple, Colors.cyan]), borderRadius: BorderRadius.circular(30)), child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, shadowColor: Colors.transparent), onPressed:()=>Navigator.push(context, MaterialPageRoute(builder:(_)=>const LoginScreen())), child: const Text('Get Started →'))),
-    ]))));
-  }
-}
-class LoginScreen extends StatefulWidget{const LoginScreen({super.key}); @override State<LoginScreen> createState()=>_LoginScreenState();}
-class _LoginScreenState extends State<LoginScreen>{bool loading=false; void doLogin()async{setState(()=>loading=true); await Future.delayed(const Duration(seconds:2)); if(mounted) Navigator.pushReplacement(context, MaterialPageRoute(builder:(_)=>const CyberHome()));} @override Widget build(BuildContext context){return Scaffold(backgroundColor: const Color(0xFF0A0A0F), body: Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children:[const Icon(Icons.account_circle, size:100, color: Colors.purpleAccent), const Text('Login with Google', style: TextStyle(fontSize:24, fontWeight: FontWeight.bold)), const SizedBox(height:40), InkWell(onTap:doLogin, child: Container(padding: const EdgeInsets.symmetric(vertical:14, horizontal:20), decoration: BoxDecoration(color:Colors.white, borderRadius: BorderRadius.circular(30)), child: const Text('Continue with Google', style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold)))), if(loading) const CircularProgressIndicator()]))) ;}}
-class CyberHome extends StatelessWidget{const CyberHome({super.key}); @override Widget build(BuildContext context){return Scaffold(backgroundColor: const Color(0xFF0A0A0F), appBar: AppBar(title: Text('KSingh App • $appLang'), backgroundColor: Colors.black), body: ListView(padding: const EdgeInsets.all(12), children:[Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(gradient: LinearGradient(colors:[Colors.purple.withOpacity(0.3), Colors.cyan.withOpacity(0.2)]), borderRadius: BorderRadius.circular(20)), child: const Text('KSingh App PRO - Neon Edition')), const SizedBox(height:16), const Text('STORIES • TRENDING NOW', style: TextStyle(color:Colors.cyanAccent)), const SizedBox(height:16), Container(height:220, decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.grey[900]), child: const Center(child: Text('🔥 VIRAL • 1.3M views'))), const SizedBox(height:10), const Text('131.2K likes • 2.4K comments', style: TextStyle(color:Colors.pinkAccent)), const SizedBox(height:20), Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(gradient: const LinearGradient(colors:[Color(0xFF1A0B2E), Color(0xFF2A1B4D)]), borderRadius: BorderRadius.circular(16)), child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children:[Text('✨ Your Reach'), Text('+42% this week ↑', style: TextStyle(color:Colors.greenAccent))]))]), bottomNavigationBar: BottomNavigationBar(backgroundColor: const Color(0xFF0F0F1A), selectedItemColor: Colors.purpleAccent, unselectedItemColor: Colors.grey, type: BottomNavigationBarType.fixed, items: const [BottomNavigationBarItem(icon: Icon(Icons.home), label: ''), BottomNavigationBarItem(icon: Icon(Icons.search), label: ''), BottomNavigationBarItem(icon: Icon(Icons.add_box), label: ''), BottomNavigationBarItem(icon: Icon(Icons.video_library), label: ''), BottomNavigationBarItem(icon: Icon(Icons.person), label: '')]));}}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#fff' },
+  header: {
+    height: 52,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#dbdbdb',
+  },
+  headerTitle: { fontSize: 24, fontWeight: '700', letterSpacing: -0.5 },
+  headerIcons: { flexDirection: 'row' },
+  iconBtn: { marginLeft: 16 },
+  storiesContainer: {
+    paddingVertical: 10,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#eee',
+  },
+  storyItem: { alignItems: 'center', marginHorizontal: 8, width: 68 },
+  storyRing: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    borderWidth: 2.5,
+    borderColor: '#e1306c', // Instagram Pink
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  userStoryRing: { borderColor: '#ccc' },
+  storyImage: { width: 54, height: 54, borderRadius: 27 },
+  storyText: { fontSize: 11, marginTop: 4, color: '#333' },
+  postCard: { marginBottom: 15 },
+  postHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  userInfo: { flexDirection: 'row', alignItems: 'center' },
+  avatar: { width: 34, height: 34, borderRadius: 17, marginRight: 10 },
+  username: { fontWeight: '600', fontSize: 13 },
+  mediaContainer: { position: 'relative' },
+  postImage: { width: width, height: width, resizeMode: 'cover' },
+  reelBadge: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  reelBadgeText: { color: '#fff', fontSize: 11, marginLeft: 4, fontWeight: '600' },
+  actionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  leftActions: { flexDirection: 'row', alignItems: 'center' },
+  actionIcon: { marginRight: 16 },
+  postDetails: { paddingHorizontal: 12 },
+  likesCount: { fontWeight: 'bold', fontSize: 13, marginBottom: 4 },
+  usernameBold: { fontWeight: 'bold' },
+  captionText: { fontSize: 13, lineHeight: 18 },
+  commentSummary: { color: '#777', fontSize: 12, marginTop: 4 },
+  bottomNav: {
+    height: 50,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    borderTopWidth: 0.5,
+    borderTopColor: '#dbdbdb',
+    backgroundColor: '#fff',
+  },
+});
