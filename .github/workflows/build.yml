@@ -12,23 +12,25 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
-import {
-  Ionicons,
-  Feather,
-  MaterialCommunityIcons,
-  FontAwesome5,
-} from '@expo/vector-icons';
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-const { width } = Dimensions.get('window');
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
 
-// Stories Data (Glow Rings)
-const STORIES = [
-  { id: '1', name: 'Your Story', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200', isUser: true },
-  { id: '2', name: 'nova.labs', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200' },
-  { id: '3', name: 'cyberz_ai', image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200' },
-  { id: '4', name: 'void.k', image: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200' },
-  { id: '5', name: 'apex_ritual', image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200' },
-];
+      - name: Install dependencies
+        run: npm install
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+          
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('For You');
