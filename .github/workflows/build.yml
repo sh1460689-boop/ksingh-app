@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -30,6 +31,267 @@ jobs:
         with:
           expo-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
+
+      # Yeh step aapke JavaScript (App.js) code ko build file ke andar se hi generate karega
+      - name: Generate App.js Screen with Like, Share, Download & Remix
+        run: |
+          cat << 'EOF' > App.js
+          import React, { useState } from 'react';
+          import { 
+            StyleSheet, 
+            Text, 
+            View, 
+            ScrollView, 
+            Image, 
+            TouchableOpacity, 
+            SafeAreaView, 
+            Alert,
+            StatusBar
+          } from 'react-native';
+
+          export default function App() {
+            // States for buttons
+            const [isLiked, setIsLiked] = useState(false);
+            const [likeCount, setLikeCount] = useState(131.2);
+            const [isSaved, setIsSaved] = useState(false);
+            const [commentCount, setCommentCount] = useState(2.4);
+            const [shareCount, setShareCount] = useState(1.1);
+            const [downloadCount, setDownloadCount] = useState(482);
+            const [remixCount, setRemixCount] = useState(94);
+
+            const handleLike = () => {
+              setIsLiked(!isLiked);
+              setLikeCount(prev => isLiked ? parseFloat((prev - 0.1).toFixed(1)) : parseFloat((prev + 0.1).toFixed(1)));
+            };
+
+            const handleSave = () => {
+              setIsSaved(!isSaved);
+              Alert.alert(isSaved ? 'Removed' : 'Saved', isSaved ? 'Post removed from saved.' : 'Post saved successfully!');
+            };
+
+            const handleComment = () => {
+              Alert.alert('Comments', 'Opening comments section...');
+            };
+
+            const handleShare = () => {
+              setShareCount(prev => parseFloat((prev + 0.1).toFixed(1)));
+              Alert.alert('Share', 'Link copied to clipboard!');
+            };
+
+            const handleDownload = () => {
+              setDownloadCount(prev => prev + 1);
+              Alert.alert('Downloading', 'Video download in high quality started!');
+            };
+
+            const handleRemix = () => {
+              setRemixCount(prev => prev + 1);
+              Alert.alert('Remix', 'Loading video into Remix studio...');
+            };
+
+            return (
+              <SafeAreaView style={styles.safeArea}>
+                <StatusBar barStyle="dark-content" />
+                
+                {/* Header */}
+                <View style={styles.header}>
+                  <View style={styles.logoContainer}>
+                    <View style={styles.ksLogo}><Text style={styles.ksLogoText}>KS</Text></View>
+                    <Text style={styles.headerTitle}>KSingh App</Text>
+                    <View style={styles.proBadge}><Text style={styles.proText}>PRO</Text></View>
+                  </View>
+                  <View style={styles.headerIcons}>
+                    <TouchableOpacity><Text style={styles.iconButton}>🔍</Text></TouchableOpacity>
+                    <TouchableOpacity>
+                      <Text style={styles.iconButton}>🔔</Text>
+                      <View style={styles.badge}><Text style={styles.badgeText}>3</Text></View>
+                    </TouchableOpacity>
+                    <TouchableOpacity><Text style={styles.iconButton}>💬</Text></TouchableOpacity>
+                  </View>
+                </View>
+
+                <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+                  {/* Stories */}
+                  <Text style={styles.sectionTitle}>STORIES • TRENDING NOW</Text>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.storiesContainer}>
+                    <View style={styles.storyItem}>
+                      <View style={[styles.storyBorder, { borderColor: '#E1306C' }]}>
+                        <Text style={styles.storyAddIcon}>+</Text>
+                      </View>
+                      <Text style={styles.storyUsername}>Your Story</Text>
+                    </View>
+                    <View style={styles.storyItem}>
+                      <View style={[styles.storyBorder, styles.activeStoryBorder]}>
+                        <Image source={{ uri: 'https://picsum.photos/id/64/100/100' }} style={styles.storyImage} />
+                      </View>
+                      <Text style={styles.storyUsername}>nova.labs</Text>
+                    </View>
+                    <View style={styles.storyItem}>
+                      <View style={[styles.storyBorder, styles.activeStoryBorder]}>
+                        <Image source={{ uri: 'https://picsum.photos/id/91/100/100' }} style={styles.storyImage} />
+                      </View>
+                      <Text style={styles.storyUsername}>cyberz_ai</Text>
+                    </View>
+                  </ScrollView>
+
+                  {/* Tabs */}
+                  <View style={styles.tabBar}>
+                    <TouchableOpacity style={[styles.tabButton, styles.activeTabButton]}>
+                      <Text style={styles.activeTabButtonText}>For You</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.tabButton}>
+                      <Text style={styles.tabButtonText}>Following</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.tabButton}>
+                      <Text style={styles.tabButtonText}>Nearby</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* Post Card */}
+                  <View style={styles.postCard}>
+                    <View style={styles.postHeader}>
+                      <Image source={{ uri: 'https://picsum.photos/id/338/100/100' }} style={styles.postAvatar} />
+                      <View style={styles.postUserInfo}>
+                        <View style={styles.usernameRow}>
+                          <Text style={styles.postUsername}>@luna.neon</Text>
+                          <Text style={styles.verifiedBadge}>💙</Text>
+                        </View>
+                        <Text style={styles.postMeta}>Neo Tokyo • 12m ago</Text>
+                      </View>
+                      <TouchableOpacity style={styles.moreButton}>
+                        <Text style={styles.moreButtonText}>•••</Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    {/* Media */}
+                    <View style={styles.mediaContainer}>
+                      <Image source={{ uri: 'https://picsum.photos/id/116/800/450' }} style={styles.postMedia} />
+                      <View style={styles.viralBadge}>
+                        <Text style={styles.viralBadgeText}>🔥 VIRAL • 1.3M views</Text>
+                      </View>
+                    </View>
+
+                    {/* Like, Comment, Share, Save Buttons */}
+                    <View style={styles.actionsBar}>
+                      <TouchableOpacity style={styles.actionItem} onPress={handleLike}>
+                        <Text style={styles.actionIcon}>{isLiked ? '❤️' : '🤍'}</Text>
+                        <Text style={[styles.actionText, isLiked && styles.likedText]}>{likeCount}K</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity style={styles.actionItem} onPress={handleComment}>
+                        <Text style={styles.actionIcon}>💬</Text>
+                        <Text style={styles.actionText}>{commentCount}K</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity style={styles.actionItem} onPress={handleShare}>
+                        <Text style={styles.actionIcon}>✈️</Text>
+                        <Text style={styles.actionText}>{shareCount}K</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity style={styles.actionItem} onPress={handleSave}>
+                        <Text style={[styles.actionIcon, isSaved && styles.savedIcon]}>{isSaved ? '🔖' : '📥'}</Text>
+                        <Text style={[styles.actionText, isSaved && styles.savedText]}>{isSaved ? 'Saved' : 'Save'}</Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    {/* Download & Remix Buttons */}
+                    <View style={styles.utilityActionsRow}>
+                      <TouchableOpacity style={styles.utilityButtonPrimary} onPress={handleDownload}>
+                        <Text style={styles.utilityButtonText}>📥 Download</Text>
+                        <Text style={styles.utilityCountText}>{downloadCount}</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity style={styles.utilityButtonSecondary} onPress={handleRemix}>
+                        <Text style={styles.utilityButtonText}>🔄 Remix</Text>
+                        <Text style={styles.utilityCountText}>{remixCount}</Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    {/* Post Caption */}
+                    <View style={styles.captionContainer}>
+                      <Text style={styles.captionText}>
+                        <Text style={styles.boldText}>luna.neon </Text>
+                        Dropped the new neon city loop ✨ this edit took 40h... pure dreamcore vibes 🌆
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={{ height: 90 }} />
+                </ScrollView>
+
+                {/* Bottom Nav */}
+                <View style={styles.bottomNavigation}>
+                  <TouchableOpacity><Text style={styles.navIconActive}>🏠</Text></TouchableOpacity>
+                  <TouchableOpacity><Text style={styles.navIcon}>🔍</Text></TouchableOpacity>
+                  <TouchableOpacity style={styles.navItemCenter}><Text style={styles.navCenterIcon}>+</Text></TouchableOpacity>
+                  <TouchableOpacity><Text style={styles.navIcon}>🎬</Text></TouchableOpacity>
+                  <TouchableOpacity><Text style={styles.navIcon}>👤</Text></TouchableOpacity>
+                </View>
+              </SafeAreaView>
+            );
+          }
+
+          const styles = StyleSheet.create({
+            safeArea: { flex: 1, backgroundColor: '#F8F9FB' },
+            container: { flex: 1 },
+            header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#FFF', borderBottomWidth: 1, borderBottomColor: '#F0F0F0' },
+            logoContainer: { flexDirection: 'row', alignItems: 'center' },
+            ksLogo: { backgroundColor: '#8E2DE2', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8, marginRight: 8 },
+            ksLogoText: { color: '#FFF', fontWeight: '900', fontSize: 18 },
+            headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#1A1A1D' },
+            proBadge: { backgroundColor: '#FFE3E3', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, marginLeft: 8 },
+            proText: { color: '#FF3366', fontWeight: '700', fontSize: 10 },
+            headerIcons: { flexDirection: 'row', alignItems: 'center' },
+            iconButton: { fontSize: 20, marginLeft: 16 },
+            badge: { position: 'absolute', top: -5, right: -5, backgroundColor: '#FF3B30', borderRadius: 10, width: 16, height: 16, justifyContent: 'center', alignItems: 'center' },
+            badgeText: { color: '#FFF', fontSize: 10, fontWeight: 'bold' },
+            sectionTitle: { fontSize: 11, fontWeight: '700', color: '#7C7C7C', paddingHorizontal: 16, marginTop: 16, marginBottom: 8, letterSpacing: 1 },
+            storiesContainer: { paddingLeft: 16, marginBottom: 16 },
+            storyItem: { alignItems: 'center', marginRight: 16 },
+            storyBorder: { width: 66, height: 66, borderRadius: 33, borderWidth: 2, borderColor: '#CCC', justifyContent: 'center', alignItems: 'center', marginBottom: 4 },
+            activeStoryBorder: { borderColor: '#8E2DE2' },
+            storyImage: { width: 58, height: 58, borderRadius: 29 },
+            storyAddIcon: { fontSize: 24, color: '#E1306C', fontWeight: 'bold' },
+            storyUsername: { fontSize: 11, color: '#555' },
+            tabBar: { flexDirection: 'row', paddingHorizontal: 16, marginBottom: 16 },
+            tabButton: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20, backgroundColor: '#EAEAEA', marginRight: 10 },
+            activeTabButton: { backgroundColor: '#8E2DE2' },
+            tabButtonText: { color: '#777', fontWeight: '600', fontSize: 14 },
+            activeTabButtonText: { color: '#FFF', fontWeight: '700', fontSize: 14 },
+            postCard: { backgroundColor: '#FFF', marginHorizontal: 16, borderRadius: 16, padding: 12, elevation: 3, marginBottom: 16 },
+            postHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
+            postAvatar: { width: 40, height: 40, borderRadius: 20 },
+            postUserInfo: { flex: 1, marginLeft: 10 },
+            usernameRow: { flexDirection: 'row', alignItems: 'center' },
+            postUsername: { fontWeight: 'bold', fontSize: 15, color: '#1A1A1D' },
+            verifiedBadge: { fontSize: 11, marginLeft: 4 },
+            postMeta: { fontSize: 11, color: '#777' },
+            moreButton: { paddingHorizontal: 10 },
+            moreButtonText: { fontSize: 14, color: '#777' },
+            mediaContainer: { position: 'relative', borderRadius: 12, overflow: 'hidden', marginBottom: 12 },
+            postMedia: { width: '100%', height: 220 },
+            viralBadge: { position: 'absolute', bottom: 10, left: 10, backgroundColor: 'rgba(0,0,0,0.6)', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
+            viralBadgeText: { color: '#FFF', fontSize: 11, fontWeight: '700' },
+            actionsBar: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 4, borderBottomWidth: 1, borderBottomColor: '#F0F0F0', paddingBottom: 12, marginBottom: 12 },
+            actionItem: { flexDirection: 'row', alignItems: 'center' },
+            actionIcon: { fontSize: 20, marginRight: 6 },
+            actionText: { fontSize: 14, fontWeight: '700', color: '#444' },
+            likedText: { color: '#FF3B30' },
+            savedIcon: { color: '#FF9500' },
+            savedText: { color: '#FF9500' },
+            utilityActionsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
+            utilityButtonPrimary: { flex: 0.48, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#ECEFF1', paddingVertical: 10, paddingHorizontal: 12, borderRadius: 8 },
+            utilityButtonSecondary: { flex: 0.48, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#F3E5F5', paddingVertical: 10, paddingHorizontal: 12, borderRadius: 8 },
+            utilityButtonText: { fontSize: 12, fontWeight: '700', color: '#333' },
+            utilityCountText: { fontSize: 11, fontWeight: 'bold', color: '#777', backgroundColor: '#FFF', paddingHorizontal: 5, paddingVertical: 2, borderRadius: 5 },
+            captionContainer: { paddingHorizontal: 4 },
+            captionText: { fontSize: 13, color: '#222', lineHeight: 18 },
+            boldText: { fontWeight: 'bold' },
+            bottomNavigation: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 60, backgroundColor: '#FFF', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', borderTopWidth: 1, borderTopColor: '#ECECEC', paddingBottom: 10 },
+            navIcon: { fontSize: 22, opacity: 0.6 },
+            navIconActive: { fontSize: 22, color: '#8E2DE2' },
+            navItemCenter: { backgroundColor: '#8E2DE2', width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center', top: -10, elevation: 4 },
+            navCenterIcon: { color: '#FFF', fontSize: 24, fontWeight: 'bold' }
+          });
+          EOF
 
       - name: Build Project
         run: npx expo export
